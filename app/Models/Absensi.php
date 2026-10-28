@@ -15,6 +15,7 @@ class Absensi extends Model
         'tanggal',
         'status',
         'keterangan',
+        'foto',
     ];
 
     // Relasi ke tabel users

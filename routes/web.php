@@ -4,6 +4,8 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 use App\Http\Controllers\AbsensiController;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use App\Models\User;
 
 // Halaman Utama (Welcome)
 Route::get('/', function () {
@@ -16,19 +18,27 @@ Route::get('/login', function () {
 })->name('login');
 
 Route::post('/login', function (Request $request) {
-    $credentials = $request->validate([
-        'email' => ['required', 'email'],
+    $request->validate([
+        'identity' => ['required'], // Bisa berupa NISN, NIP, atau ID Admin
         'password' => ['required'],
     ]);
 
-    if (Auth::attempt($credentials)) {
+    // Cari user berdasarkan nisn, nip, atau id
+    $user = User::where('nisn', $request->identity)
+                ->orWhere('nip', $request->identity)
+                ->orWhere('id', $request->identity)
+                ->first();
+
+    // Verifikasi password dan lakukan login manual
+    if ($user && Hash::check($request->password, $user->password)) {
+        Auth::login($user);
         $request->session()->regenerate();
         return redirect()->intended('dashboard');
     }
 
     return back()->withErrors([
-        'email' => 'Email atau password salah.',
-    ]);
+        'identity' => 'NISN, NIP, atau ID dan password salah.',
+    ])->withInput();
 });
 
 // Proses Logout

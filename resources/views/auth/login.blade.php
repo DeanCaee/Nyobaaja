@@ -16,14 +16,18 @@
 
                 <form action="{{ route('login') }}" method="POST">
                     @csrf
+
+                    <!-- Diubah dari Email menjadi NISN / NIP / ID -->
                     <div class="mb-3">
-                        <label for="email" class="form-label">Email</label>
-                        <input type="email" class="form-control" id="email" name="email" required value="{{ old('email') }}">
+                        <label for="identity" class="form-label">NISN / NIP / ID Pengenal</label>
+                        <input type="text" class="form-control" id="identity" name="identity" required value="{{ old('identity') }}" placeholder="Masukkan NISN, NIP, atau ID...">
                     </div>
+
                     <div class="mb-3">
                         <label for="password" class="form-label">Password</label>
-                        <input type="password" class="form-control" id="password" name="password" required>
+                        <input type="password" class="form-control" id="password" name="password" required placeholder="Masukkan password...">
                     </div>
+
                     <button type="submit" class="btn btn-primary w-100">Login</button>
                 </form>
             </div>

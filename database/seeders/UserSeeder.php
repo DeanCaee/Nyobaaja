@@ -15,6 +15,7 @@ class UserSeeder extends Seeder
     public function run(): void
     {
         User::create([
+            'id' => '1000',
             'name' => 'Administrator',
             'email' => 'admin@gmail.com',
             'password' => Hash::make('password'),
@@ -30,14 +31,37 @@ class UserSeeder extends Seeder
             'nip'=> '101',
         ]);
 
-        // Buat Akun Siswa
-        User::create([
-            'name' => 'Siswa Teladan',
-            'email' => 'siswa@gmail.com',
-            'password' => Hash::make('password'),
-            'role' => 'siswa',
-            'nisn' => '23717',
-                    ]);
-    }
-    }
+        $banyakSiswa = [
+            [
+                'name' => 'Azhar Syukron',
+                'email'=>'azhar@gmail.com',
+                'nisn' => '252610010',
+                'password' => Hash::make('010101'),
+                'role' => 'siswa',
+            ],
+            [
+                'name' => 'Siti Hanifah',
+                'email'=>'siti@gmail.com',
+                'nisn' => '252610054',
+                'password' => Hash::make('261208'),
+                'role' => 'siswa',
+            ],
+            [
+                'name' => 'Ardistya Anindya',
+                'email'=>'dista@gmail.com',
+                'nisn' => '252610011',
+                'password' => Hash::make('030210'),
+                'role' => 'siswa',
+            ],
+            // Kamu bisa teruskan menambah ke bawah sebanyak yang dibutuhkan...
+        ];
 
+        // Masukkan data siswa ke database secara otomatis
+        foreach ($banyakSiswa as $siswa) {
+            User::updateOrCreate(
+                ['nisn' => $siswa['nisn']], // Kunci pengecekan agar tidak duplikat
+                $siswa
+            );
+    }
+    }
+}

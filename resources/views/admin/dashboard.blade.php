@@ -12,19 +12,26 @@
             <div class="alert alert-success">{{ session('success') }}</div>
         @endif
 
-        <!-- Kotak Kontrol Buka/Tutup Akses -->
+        <!-- Kotak Kontrol Buka/Tutup Akses (Menggunakan Cache) -->
         <div class="card mb-4 shadow-sm">
             <div class="card-body">
                 <h5 class="card-title">Kontrol Akses Form Absensi Siswa</h5>
+
+                @php
+                    // Ambil status langsung dari Cache global
+                    $statusBuka = \Illuminate\Support\Facades\Cache::get('form_absen_buka', false);
+                @endphp
+
                 <p class="card-text">Status Form Saat Ini:
-                    <span class="badge bg-{{ session('form_absen_buka', false) ? 'success' : 'danger' }}">
-                        {{ session('form_absen_buka', false) ? 'DIBUKA' : 'DITUTUP' }}
+                    <span class="badge bg-{{ $statusBuka ? 'success' : 'danger' }}">
+                        {{ $statusBuka ? 'DIBUKA' : 'DITUTUP' }}
                     </span>
                 </p>
+
                 <form action="{{ route('admin.toggle.akses') }}" method="POST">
                     @csrf
-                    <button type="submit" class="btn btn-{{ session('form_absen_buka', false) ? 'danger' : 'success' }}">
-                        {{ session('form_absen_buka', false) ? 'Tutup Akses Absen' : 'Buka Akses Absen' }}
+                    <button type="submit" class="btn btn-{{ $statusBuka ? 'danger' : 'success' }}">
+                        {{ $statusBuka ? 'Tutup Akses Absen' : 'Buka Akses Absen' }}
                     </button>
                 </form>
             </div>

@@ -44,7 +44,7 @@ class AbsensiController extends Controller
     }
 
     /**
-     * Proses siswa mengirim absen menggunakan NISN
+     * Proses siswa mengirim absen menggunakan NISN beserta bukti foto
      */
     public function simpanSiswa(Request $request)
     {
@@ -57,6 +57,7 @@ class AbsensiController extends Controller
             'nisn' => 'required|exists:users,nisn',
             'status' => 'required|in:Hadir,Izin,Sakit',
             'keterangan' => 'nullable|string',
+            'foto' => 'nullable|image|mimes:jpeg,png,jpg|max:2048', // Validasi file gambar maksimal 2MB
         ]);
 
         $siswa = User::where('nisn', $request->nisn)->where('role', 'siswa')->first();
@@ -71,7 +72,14 @@ class AbsensiController extends Controller
                              ->first();
 
         if ($sudahAbsen) {
-            return back()->with('error', 'Anda sudah melakukan absensi hari ini!');
+            // Diarahkan ke dashboard agar pesan error-nya langsung muncul di halaman utama siswa
+            return redirect()->route('dashboard')->with('error', 'Anda sudah melakukan absensi hari ini!');
+        }
+
+        // Proses Upload Foto jika ada
+        $fotoPath = null;
+        if ($request->hasFile('foto')) {
+            $fotoPath = $request->file('foto')->store('bukti_absensi', 'public');
         }
 
         Absensi::create([
@@ -79,6 +87,7 @@ class AbsensiController extends Controller
             'tanggal' => date('Y-m-d'),
             'status' => $request->status,
             'keterangan' => $request->keterangan,
+            'foto' => $fotoPath, // Simpan path foto ke database
         ]);
 
         return redirect()->route('dashboard')->with('success', 'Absensi dengan NISN ' . $request->nisn . ' berhasil tercatat!');
