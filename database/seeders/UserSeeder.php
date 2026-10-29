@@ -53,6 +53,13 @@ class UserSeeder extends Seeder
                 'password' => Hash::make('030210'),
                 'role' => 'siswa',
             ],
+            [
+                'name' => 'Dean Caesar Abdul Rahman',
+                'nisn' => '252610023',
+                'email'=> 'dean@gmail.com',
+                'password'=>Hash::make('131209'),
+                'role' => 'siswa',
+            ],
             // Kamu bisa teruskan menambah ke bawah sebanyak yang dibutuhkan...
         ];
 
